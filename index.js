@@ -79,7 +79,7 @@ function handleDeleteBtn() {
     currentTweetData.forEach((tweet) => {
         if (tweet.handle === '@Scrimba') {
         currentTweetData.shift(currentTweetData[0])
-        localStorage.clear()
+        localStorage.clear('Tweets')
         }
     })
     render()
