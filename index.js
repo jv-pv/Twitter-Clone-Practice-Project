@@ -1,14 +1,11 @@
 import {tweetsData} from './data.js';
 import { v4 as uuid} from 'https://jspm.dev/uuid'
-
-console.log(tweetsData)
-
 const tweetInput = document.getElementById('tweet-input');
-let currentTweetData = tweetsData
+let currentTweetData = tweetsData;
 const tweetsFromLocalStorage = JSON.parse(localStorage.getItem("Tweets"))
 
 if (tweetsFromLocalStorage) {
-    currentTweetData = tweetsFromLocalStorage
+    currentTweetData = tweetsFromLocalStorage;
     render()
 }
 
@@ -23,10 +20,10 @@ document.addEventListener('click', (e) => {
         handleReplies(e.target.dataset.reply);
     }
     else if (e.target.id === 'tweet-btn') {
-        handleTweetBtn()
+        handleTweetBtn();
     }
     else if (e.target.id === 'delete-btn') {
-        handleDeleteBtn()
+        handleDeleteBtn();
     }
 })
 
@@ -34,13 +31,9 @@ function handleLikes(tweetId) {
     const targetTweetObj = currentTweetData.find((tweet) => {
         return tweetId === tweet.uuid;
     })
-        
-    if (targetTweetObj.isLiked) {
-        targetTweetObj.likes--;
-    } else {
-        targetTweetObj.likes++;
-    }
+    targetTweetObj.isLiked ? targetTweetObj.likes-- : targetTweetObj.likes++;
     targetTweetObj.isLiked = !targetTweetObj.isLiked;
+    localStorage.setItem("Tweets", JSON.stringify(currentTweetData))
     render();
 }
 
@@ -48,13 +41,9 @@ function handleRetweets(tweetId) {
     const targetRetweetObj = currentTweetData.find((retweet) => {
         return tweetId === retweet.uuid;
     })
-    
-    if (targetRetweetObj.isRetweeted) {
-        targetRetweetObj.retweets--   
-    } else {
-        targetRetweetObj.retweets++
-    }
-    targetRetweetObj.isRetweeted = !targetRetweetObj.isRetweeted
+    targetRetweetObj.isRetweeted ? targetRetweetObj.retweets-- : targetRetweetObj.retweets++;
+    targetRetweetObj.isRetweeted = !targetRetweetObj.isRetweeted;
+    localStorage.setItem("Tweets", JSON.stringify(currentTweetData))
     render()
 } 
 
@@ -75,35 +64,39 @@ function handleTweetBtn() {
         isRetweeted: false,
         uuid: uuid()
     }
+
+    if (newTweet.tweetText === '' || "") return;
     
     
     currentTweetData.unshift(newTweet)
-    tweetInput.value = ''
+    tweetInput.value = '';
     
     localStorage.setItem("Tweets", JSON.stringify(currentTweetData))
     render(currentTweetData)
 }
 
 function handleDeleteBtn() {
-    localStorage.clear()
-    currentTweetData.shift(currentTweetData[0])
+    currentTweetData.forEach((tweet) => {
+        if (tweet.handle === '@Scrimba') {
+        currentTweetData.shift(currentTweetData[0])
+        localStorage.clear()
+        }
+    })
     render()
 }
-
-
 
 function getTweetHtml() {
     let tweetFeed = ''
     currentTweetData.forEach((tweet) => {
         
-        let likedClass = ''
-        let retweetedClass = ''
+        let likedClass = '';
+        let retweetedClass = '';
         
-        if (tweet.isLiked) likedClass = 'liked'
-        if (tweet.isRetweeted) retweetedClass = 'retweeted'
+        if (tweet.isLiked) likedClass = 'liked';
+        if (tweet.isRetweeted) retweetedClass = 'retweeted';
         
         
-        let repliesHtml = ''
+        let repliesHtml = '';
         
         if (tweet.replies.length > 0) {
             tweet.replies.forEach((reply) => {
