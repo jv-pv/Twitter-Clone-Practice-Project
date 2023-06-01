@@ -1,8 +1,8 @@
 import {tweetsData} from './data.js';
 import { v4 as uuid} from 'https://jspm.dev/uuid'
 const tweetInput = document.getElementById('tweet-input');
-let currentTweetData = tweetsData;
 const tweetsFromLocalStorage = JSON.parse(localStorage.getItem("Tweets"))
+let currentTweetData = tweetsData;
 
 if (tweetsFromLocalStorage) {
     currentTweetData = tweetsFromLocalStorage;
