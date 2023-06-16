@@ -72,7 +72,7 @@ function handleTweetBtn() {
     tweetInput.value = '';
     
     localStorage.setItem("Tweets", JSON.stringify(currentTweetData))
-    render(currentTweetData)
+    render()
 }
 
 function handleDeleteBtn() {
