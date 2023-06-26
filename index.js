@@ -31,6 +31,7 @@ function handleLikes(tweetId) {
     const targetTweetObj = currentTweetData.find((tweet) => {
         return tweetId === tweet.uuid;
     })
+    console.log(targetTweetObj)
     targetTweetObj.isLiked ? targetTweetObj.likes-- : targetTweetObj.likes++;
     targetTweetObj.isLiked = !targetTweetObj.isLiked;
     localStorage.setItem("Tweets", JSON.stringify(currentTweetData))
