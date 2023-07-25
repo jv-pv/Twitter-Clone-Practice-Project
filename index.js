@@ -1,107 +1,101 @@
-import {tweetsData} from './data.js';
-import { v4 as uuid} from 'https://jspm.dev/uuid'
-const tweetInput = document.getElementById('tweet-input');
-const tweetsFromLocalStorage = JSON.parse(localStorage.getItem("Tweets"))
+import { tweetsData } from "./data.js";
+import { v4 as uuid } from "https://jspm.dev/uuid";
+const tweetInput = document.getElementById("tweet-input");
+const tweetsFromLocalStorage = JSON.parse(localStorage.getItem("Tweets"));
 let currentTweetData = tweetsData;
 
 if (tweetsFromLocalStorage) {
-    currentTweetData = tweetsFromLocalStorage;
-    render()
+  currentTweetData = tweetsFromLocalStorage;
+  render();
 }
 
-document.addEventListener('click', (e) => {
-    if (e.target.dataset.like) {
-        handleLikes(e.target.dataset.like);
-    }
-    else if (e.target.dataset.retweet) {
-        handleRetweets(e.target.dataset.retweet);
-    }
-    else if (e.target.dataset.reply) {
-        handleReplies(e.target.dataset.reply);
-    }
-    else if (e.target.id === 'tweet-btn') {
-        handleTweetBtn();
-    }
-    else if (e.target.id === 'delete-btn') {
-        handleDeleteBtn();
-    }
-})
+document.addEventListener("click", (e) => {
+  if (e.target.dataset.like) {
+    handleLikes(e.target.dataset.like);
+  } else if (e.target.dataset.retweet) {
+    handleRetweets(e.target.dataset.retweet);
+  } else if (e.target.dataset.reply) {
+    handleReplies(e.target.dataset.reply);
+  } else if (e.target.id === "tweet-btn") {
+    handleTweetBtn();
+  } else if (e.target.id === "delete-btn") {
+    handleDeleteBtn();
+  }
+});
 
 function handleLikes(tweetId) {
-    const targetTweetObj = currentTweetData.find((tweet) => {
-        return tweetId === tweet.uuid;
-    })
-    console.log(targetTweetObj)
-    targetTweetObj.isLiked ? targetTweetObj.likes-- : targetTweetObj.likes++;
-    targetTweetObj.isLiked = !targetTweetObj.isLiked;
-    localStorage.setItem("Tweets", JSON.stringify(currentTweetData))
-    render();
+  const targetTweetObj = currentTweetData.find((tweet) => {
+    return tweetId === tweet.uuid;
+  });
+  console.log(targetTweetObj);
+  targetTweetObj.isLiked ? targetTweetObj.likes-- : targetTweetObj.likes++;
+  targetTweetObj.isLiked = !targetTweetObj.isLiked;
+  localStorage.setItem("Tweets", JSON.stringify(currentTweetData));
+  render();
 }
 
 function handleRetweets(tweetId) {
-    const targetRetweetObj = currentTweetData.find((retweet) => {
-        return tweetId === retweet.uuid;
-    })
-    targetRetweetObj.isRetweeted ? targetRetweetObj.retweets-- : targetRetweetObj.retweets++;
-    targetRetweetObj.isRetweeted = !targetRetweetObj.isRetweeted;
-    localStorage.setItem("Tweets", JSON.stringify(currentTweetData))
-    render()
-} 
+  const targetRetweetObj = currentTweetData.find((retweet) => {
+    return tweetId === retweet.uuid;
+  });
+  targetRetweetObj.isRetweeted
+    ? targetRetweetObj.retweets--
+    : targetRetweetObj.retweets++;
+  targetRetweetObj.isRetweeted = !targetRetweetObj.isRetweeted;
+  localStorage.setItem("Tweets", JSON.stringify(currentTweetData));
+  render();
+}
 
 function handleReplies(replyId) {
-    document.getElementById(`replies-${replyId}`).classList.toggle('hidden');
+  document.getElementById(`replies-${replyId}`).classList.toggle("hidden");
 }
 
 function handleTweetBtn() {
-    
-    let newTweet = {
-        handle: "@Scrimba",
-        profilePic: "./images/userLogo.png",
-        likes: 0,
-        retweets: 0,
-        tweetText: tweetInput.value,
-        replies: [],
-        isLiked: false,
-        isRetweeted: false,
-        uuid: uuid()
-    }
+  let newTweet = {
+    handle: "@Scrimba",
+    profilePic: "./images/userLogo.png",
+    likes: 0,
+    retweets: 0,
+    tweetText: tweetInput.value,
+    replies: [],
+    isLiked: false,
+    isRetweeted: false,
+    uuid: uuid(),
+  };
 
-    if (newTweet.tweetText === '' || "") return;
-    
-    
-    currentTweetData.unshift(newTweet)
-    tweetInput.value = '';
-    
-    localStorage.setItem("Tweets", JSON.stringify(currentTweetData))
-    render()
+  if (newTweet.tweetText === "" || "") return;
+
+  currentTweetData.unshift(newTweet);
+  tweetInput.value = "";
+
+  localStorage.setItem("Tweets", JSON.stringify(currentTweetData));
+  render();
 }
 
 function handleDeleteBtn() {
-    currentTweetData.forEach((tweet) => {
-        if (tweet.handle === '@Scrimba') {
-        currentTweetData.shift(currentTweetData[0])
-        localStorage.clear('Tweets')
-        }
-    })
-    render()
+  currentTweetData.forEach((tweet) => {
+    if (tweet.handle === "@Scrimba") {
+      currentTweetData.shift(currentTweetData[0]);
+      localStorage.clear("Tweets");
+    }
+  });
+  render();
 }
 
 function getTweetHtml() {
-    let tweetFeed = ''
-    currentTweetData.forEach((tweet) => {
-        
-        let likedClass = '';
-        let retweetedClass = '';
-        
-        if (tweet.isLiked) likedClass = 'liked';
-        if (tweet.isRetweeted) retweetedClass = 'retweeted';
-        
-        
-        let repliesHtml = '';
-        
-        if (tweet.replies.length > 0) {
-            tweet.replies.forEach((reply) => {
-                repliesHtml += `
+  let tweetFeed = "";
+  currentTweetData.forEach((tweet) => {
+    let likedClass = "";
+    let retweetedClass = "";
+
+    if (tweet.isLiked) likedClass = "liked";
+    if (tweet.isRetweeted) retweetedClass = "retweeted";
+
+    let repliesHtml = "";
+
+    if (tweet.replies.length > 0) {
+      tweet.replies.forEach((reply) => {
+        repliesHtml += `
                 <div class="tweet-reply">
                     <div class="tweet-inner">
                         <img src="${reply.profilePic}" class="profile-pic">
@@ -111,11 +105,11 @@ function getTweetHtml() {
                             </div>
                         </div>
                 </div>
-                `        
-            })
-        }
-        
-        tweetFeed += `
+                `;
+      });
+    }
+
+    tweetFeed += `
         <div class="tweet">
             <div class="tweet-inner">
                 <img src="${tweet.profilePic}" class="profile-pic">
@@ -142,13 +136,13 @@ function getTweetHtml() {
                         ${repliesHtml}
                 </div> 
         </div>
-        `
-    })
-    return tweetFeed;
+        `;
+  });
+  return tweetFeed;
 }
 
 function render() {
-    document.getElementById('feed').innerHTML = getTweetHtml();
+  document.getElementById("feed").innerHTML = getTweetHtml();
 }
 
 render(currentTweetData);
