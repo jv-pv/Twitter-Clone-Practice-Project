@@ -63,7 +63,7 @@ function handleTweetBtn() {
     uuid: uuid(),
   };
 
-  if (newTweet.tweetText === "" || "") return;
+  if (!newTweet.tweetText.trim()) return;
 
   currentTweetData.unshift(newTweet);
   tweetInput.value = "";
@@ -145,4 +145,4 @@ function render() {
   document.getElementById("feed").innerHTML = getTweetHtml();
 }
 
-render(currentTweetData);
+render();
